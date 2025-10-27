@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.teleop;
+package org.firstinspires.ftc.teamcode.opmodes.teleOp;
 
 //==============================Robot Core=============================
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -10,6 +10,8 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
 //==============================Road Runner============================
 import com.acmerobotics.roadrunner.Pose2d;
+
+import org.firstinspires.ftc.teamcode.enums.AllianceColor;
 import org.firstinspires.ftc.teamcode.roadRunner.drives.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadRunner.localizer.ThreeDeadWheelLocalizer;
 
@@ -27,7 +29,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.File;
 
-@TeleOp(name = "DriveBase-typesOfDriving", group = "Dev-Teleops")
+@TeleOp(name = "DriveBase", group = "Dev-Teleops")
 public class DriveBaseTeleOp extends LinearOpMode {
 
     @Override
@@ -60,7 +62,6 @@ public class DriveBaseTeleOp extends LinearOpMode {
         double x, y, rx, denominator;
         double leftFrontPower = 0, leftBackPower = 0, rightFrontPower = 0, rightBackPower = 0;
         double botHeading, rotX, rotY;
-        double servoPower;
 
         //=============================================================
         //==================ROAD RUNNER INITIALIZATION=================
@@ -79,6 +80,7 @@ public class DriveBaseTeleOp extends LinearOpMode {
             double startPoseX = json.get("x").getAsDouble();
             double startPoseY = json.get("y").getAsDouble();
             double startPoseHeading = json.get("heading").getAsDouble();
+            AllianceColor allianceColor = AllianceColor.valueOf(json.get("color").getAsString());
 
             startPose = new Pose2d(startPoseX, startPoseY, startPoseHeading);
         } catch (IOException e) {
