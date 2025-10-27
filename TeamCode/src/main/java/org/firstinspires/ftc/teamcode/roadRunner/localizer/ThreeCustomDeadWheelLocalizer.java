@@ -1,0 +1,142 @@
+package org.firstinspires.ftc.teamcode.roadRunner.localizer;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.DualNum;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Time;
+import com.acmerobotics.roadrunner.Twist2dDual;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.Vector2dDual;
+import com.acmerobotics.roadrunner.ftc.Encoder;
+import com.acmerobotics.roadrunner.ftc.FlightRecorder;
+import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
+import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
+import com.acmerobotics.roadrunner.ftc.RawEncoder;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.roadRunner.dash.Localizer;
+import org.firstinspires.ftc.teamcode.roadRunner.messages.ThreeDeadWheelInputsMessage;
+
+@Config
+public final class ThreeCustomDeadWheelLocalizer implements Localizer {
+    public static class Params {
+        public double par0YTicks = 0.0; // y position of the first parallel encoder (in tick units)
+        public double par1YTicks = 1.0; // y position of the second parallel encoder (in tick units)
+        public double perpXTicks = 0.0; // x position of the perpendicular encoder (in tick units)
+    }
+
+    public static Params PARAMS = new Params();
+
+    public final Encoder par0, par1, perp;
+
+    public final double inPerTickPar0;
+    public final double inPerTickPar1;
+    public final double inPerTickPerp;
+
+    private int lastPar0Pos, lastPar1Pos, lastPerpPos;
+    private boolean initialized;
+    private Pose2d pose;
+
+    public ThreeCustomDeadWheelLocalizer(
+            HardwareMap hardwareMap,
+            double inPerTickPar0,
+            double inPerTickPar1,
+            double inPerTickPerp,
+            Pose2d initialPose
+    ) {
+        // TODO: make sure your config has **motors** with these names (or change them)
+        //   the encoders should be plugged into the slot matching the named motor
+        //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
+        par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par0")));
+        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "par1")));
+        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "perp")));
+
+        // TODO: reverse encoder directions if needed
+        //   par0.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        this.inPerTickPar0 = inPerTickPar0;
+        this.inPerTickPar1 = inPerTickPar1;
+        this.inPerTickPerp = inPerTickPerp;
+
+        FlightRecorder.write("THREE_CUSTOM_DEAD_WHEEL_PARAMS", PARAMS);
+
+        pose = initialPose;
+    }
+
+    @Override
+    public void setPose(Pose2d pose) {
+        this.pose = pose;
+    }
+
+    @Override
+    public Pose2d getPose() {
+        return pose;
+    }
+
+    @Override
+    public PoseVelocity2d update() {
+        PositionVelocityPair par0PosVel = par0.getPositionAndVelocity();
+        PositionVelocityPair par1PosVel = par1.getPositionAndVelocity();
+        PositionVelocityPair perpPosVel = perp.getPositionAndVelocity();
+
+        FlightRecorder.write("THREE_DEAD_WHEEL_INPUTS",
+                new ThreeDeadWheelInputsMessage(par0PosVel, par1PosVel, perpPosVel));
+
+        if (!initialized) {
+            initialized = true;
+
+            lastPar0Pos = par0PosVel.position;
+            lastPar1Pos = par1PosVel.position;
+            lastPerpPos = perpPosVel.position;
+
+            return new PoseVelocity2d(new Vector2d(0.0, 0.0), 0.0);
+        }
+
+        // Calculate deltas
+        int par0PosDelta = par0PosVel.position - lastPar0Pos;
+        int par1PosDelta = par1PosVel.position - lastPar1Pos;
+        int perpPosDelta = perpPosVel.position - lastPerpPos;
+
+        // Convert encoder ticks to inches for each wheel
+        double par0DeltaIn = par0PosDelta * inPerTickPar0;
+        double par1DeltaIn = par1PosDelta * inPerTickPar1;
+        double perpDeltaIn = perpPosDelta * inPerTickPerp;
+
+        double par0VelIn = par0PosVel.velocity * inPerTickPar0;
+        double par1VelIn = par1PosVel.velocity * inPerTickPar1;
+        double perpVelIn = perpPosVel.velocity * inPerTickPerp;
+
+        // Apply standard 3-wheel localization math using scaled distances
+        Twist2dDual<Time> twist = new Twist2dDual<>(
+                new Vector2dDual<>(
+                        new DualNum<>(new double[]{
+                                (PARAMS.par0YTicks * par1DeltaIn - PARAMS.par1YTicks * par0DeltaIn)
+                                        / (PARAMS.par0YTicks - PARAMS.par1YTicks),
+                                (PARAMS.par0YTicks * par1VelIn - PARAMS.par1YTicks * par0VelIn)
+                                        / (PARAMS.par0YTicks - PARAMS.par1YTicks)
+                        }),
+                        new DualNum<>(new double[]{
+                                (PARAMS.perpXTicks / (PARAMS.par0YTicks - PARAMS.par1YTicks)
+                                        * (par1DeltaIn - par0DeltaIn) + perpDeltaIn),
+                                (PARAMS.perpXTicks / (PARAMS.par0YTicks - PARAMS.par1YTicks)
+                                        * (par1VelIn - par0VelIn) + perpVelIn)
+                        })
+                ),
+                new DualNum<>(new double[]{
+                        (par0DeltaIn - par1DeltaIn) / (PARAMS.par0YTicks - PARAMS.par1YTicks),
+                        (par0VelIn - par1VelIn) / (PARAMS.par0YTicks - PARAMS.par1YTicks)
+                })
+        );
+
+        // Save new last positions
+        lastPar0Pos = par0PosVel.position;
+        lastPar1Pos = par1PosVel.position;
+        lastPerpPos = perpPosVel.position;
+
+        // Update pose
+        pose = pose.plus(twist.value());
+        return twist.velocity().value();
+    }
+}
