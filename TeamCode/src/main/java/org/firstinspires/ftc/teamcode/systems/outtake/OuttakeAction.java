@@ -6,23 +6,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class OuttakeSystem {
+public class OuttakeAction {
     static DcMotorEx outtake;
 
     // 6000 RPM motor (free speed)
     private static final double MAX_RPM = 6000.0;
     private static final double TOLERANCE = 0.1; // 10% tolerance band
 
-    public OuttakeSystem(HardwareMap hardwareMap) {
+    public OuttakeAction(HardwareMap hardwareMap) {
         outtake = hardwareMap.get(DcMotorEx.class, "intake");
         outtake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void move(double power) {
-        outtake.setPower(power);
-    }
-
-    // Returns true if current motor speed is close to expected speed for the given power.
     public boolean isAtTargetSpeed(double targetPower) {
         // Read encoder velocity in ticks per second
         double velocityTicksPerSec = outtake.getVelocity();
@@ -36,5 +31,17 @@ public class OuttakeSystem {
 
         // Check if within tolerance
         return Math.abs(currentRPM - expectedRPM) <= (TOLERANCE * expectedRPM);
+    }
+
+    public Action moveAction(double power) {
+        return new Action() {
+            @Override
+            public boolean run(TelemetryPacket packet) {
+                outtake.setPower(power);
+
+                // Keep running while spinning up
+                return !isAtTargetSpeed(power);
+            }
+        };
     }
 }
