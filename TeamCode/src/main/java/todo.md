@@ -1,6 +1,6 @@
 ❌ Road Runner tunning
-❌ Intake code
-❌ Outake code
+✅ Intake code
+✅ Outake code
 ❌ Indexer code
 ❌ Main teleop
 ❌ Position presets

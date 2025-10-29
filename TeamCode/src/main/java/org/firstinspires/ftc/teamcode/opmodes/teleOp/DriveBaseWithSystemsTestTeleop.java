@@ -10,6 +10,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
+//===============================Systems===============================
+import org.firstinspires.ftc.teamcode.systems.intake.IntakeSystem;
+import org.firstinspires.ftc.teamcode.systems.outtake.OuttakeSystem;
+
 //==============================Road Runner============================
 import com.acmerobotics.roadrunner.Pose2d;
 
@@ -36,7 +40,7 @@ import com.google.gson.JsonParser;
 import java.io.File;
 
 @TeleOp(name = "DriveBase", group = "Dev-Teleops")
-public class DriveBaseTeleOp extends LinearOpMode {
+public class DriveBaseWithSystemsTestTeleop extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -68,6 +72,16 @@ public class DriveBaseTeleOp extends LinearOpMode {
         double x, y, rx, denominator;
         double leftFrontPower = 0, leftBackPower = 0, rightFrontPower = 0, rightBackPower = 0;
         double botHeading, rotX, rotY;
+
+        IntakeSystem intake = new IntakeSystem(hardwareMap);
+        OuttakeSystem outtake = new OuttakeSystem(hardwareMap);
+
+        //=============================================================
+        //====================SYSTEMS INITIALIZATION===================
+        //=============================================================
+
+        outtake.move(gamepad1.left_trigger);
+        intake.move(gamepad1.right_trigger);
 
         //=============================================================
         //==================ROAD RUNNER INITIALIZATION=================
@@ -126,12 +140,12 @@ public class DriveBaseTeleOp extends LinearOpMode {
             coefYGamepad1 = GamepadsCoefficients.coefYGamepad1;
             coefRxGamepad1 = GamepadsCoefficients.coefRxGamepad1;
 
-            if (gamepad1.right_trigger > 0.1) {
+            if (gamepad1.right_bumper) {
                 // 50% motor power gamepad1
                 coefXGamepad1 = 0.5;
                 coefYGamepad1 = 0.5;
                 coefRxGamepad1 = 0.5;
-            } else if (gamepad1.left_trigger > 0.1) {
+            } else if (gamepad1.left_bumper) {
                 // 25% motor power gamepad1
                 coefXGamepad1 = 0.25;
                 coefYGamepad1 = 0.25;
@@ -251,6 +265,7 @@ public class DriveBaseTeleOp extends LinearOpMode {
             TelemetryMethods.displayCodeVersion(telemetry, dashboardTelemetry, "7.29.25.2.33");
             telemetry.addLine("-----------------------------");
             telemetry.update();
+
         }
     }
 }
