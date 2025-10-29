@@ -1,0 +1,9 @@
+<Calibrations>
+    <Calibration
+        vid="0x045E"
+        pid="0x0779"
+        size="640 480"
+        focalLength="678.154 678.17"
+        principalPoint="318.135 228.374"
+        distortionCoefficients="0.154576 -1.19143 0 0 2.06105 0 0 0" />
+</Calibrations>
