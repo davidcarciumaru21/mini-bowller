@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 //===============================Systems===============================
 import org.firstinspires.ftc.teamcode.systems.intake.IntakeSystem;
 import org.firstinspires.ftc.teamcode.systems.outtake.OuttakeSystem;
+import org.firstinspires.ftc.teamcode.systems.indexer.IndexSystem;
 
 //==============================Road Runner============================
 import com.acmerobotics.roadrunner.Pose2d;
@@ -39,8 +40,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.File;
 
-@TeleOp(name = "DriveBase", group = "Dev-Teleops")
-public class DriveBaseWithSystemsTestTeleop extends LinearOpMode {
+@TeleOp(name = "DriveBaseWithSystems", group = "Dev-Teleops")
+public class MainTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -73,15 +74,13 @@ public class DriveBaseWithSystemsTestTeleop extends LinearOpMode {
         double leftFrontPower = 0, leftBackPower = 0, rightFrontPower = 0, rightBackPower = 0;
         double botHeading, rotX, rotY;
 
-        IntakeSystem intake = new IntakeSystem(hardwareMap);
-        OuttakeSystem outtake = new OuttakeSystem(hardwareMap);
-
         //=============================================================
         //====================SYSTEMS INITIALIZATION===================
         //=============================================================
 
-        outtake.move(gamepad1.left_trigger);
-        intake.move(gamepad1.right_trigger);
+        IntakeSystem intake = new IntakeSystem(hardwareMap);
+        OuttakeSystem outtake = new OuttakeSystem(hardwareMap);
+        IndexSystem indexer = new IndexSystem(hardwareMap);
 
         //=============================================================
         //==================ROAD RUNNER INITIALIZATION=================
@@ -127,6 +126,12 @@ public class DriveBaseWithSystemsTestTeleop extends LinearOpMode {
 
         // Wait for the start button
         waitForStart();
+
+        //=============================================================
+        //========================RUN ONCE CODE========================
+        //=============================================================
+
+        indexer.start();
 
         // Main control loop
         while(opModeIsActive()) {
@@ -246,11 +251,18 @@ public class DriveBaseWithSystemsTestTeleop extends LinearOpMode {
             lastShareGamepad1 = currentShareStateGamepad1;
             lastShareGamepad2 = currentShareStateGamepad2;
 
-            //======================Apllying powers=======================
+            //======================Applying powers=======================
             drive.leftFront.setPower(leftFrontPower);
             drive.leftBack.setPower(leftBackPower);
             drive.rightFront.setPower(rightFrontPower);
             drive.rightBack.setPower(rightBackPower);
+
+            //=============================================================
+            //===========================SYSTEMS===========================
+            //=============================================================
+
+            outtake.move(gamepad1.left_trigger);
+            intake.move(gamepad1.right_trigger);
 
             //=============================================================
             //==========================TELEMETRY==========================
@@ -267,5 +279,11 @@ public class DriveBaseWithSystemsTestTeleop extends LinearOpMode {
             telemetry.update();
 
         }
+
+        indexer.stop();
+        drive.leftFront.setPower(0.0);
+        drive.leftBack.setPower(0.0);
+        drive.rightFront.setPower(0.0);
+        drive.rightBack.setPower(0.0);
     }
 }

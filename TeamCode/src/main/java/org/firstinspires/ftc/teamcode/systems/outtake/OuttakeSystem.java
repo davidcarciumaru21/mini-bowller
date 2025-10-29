@@ -14,7 +14,7 @@ public class OuttakeSystem {
     private static final double TOLERANCE = 0.1; // 10% tolerance band
 
     public OuttakeSystem(HardwareMap hardwareMap) {
-        outtake = hardwareMap.get(DcMotorEx.class, "intake");
+        outtake = hardwareMap.get(DcMotorEx.class, "outtake");
         outtake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 

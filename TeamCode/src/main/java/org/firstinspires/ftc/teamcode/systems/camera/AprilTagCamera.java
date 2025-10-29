@@ -89,6 +89,19 @@ public class AprilTagCamera {
         return null;
     }
 
+    public double getAngleByTag(AprilTagDetection detectedTag) {
+        return detectedTag.ftcPose.yaw;
+    }
+
+    public Double getAngleByTagId(int id) {
+        for (AprilTagDetection detection : detectionTags) {
+            if (detection.id == id) {
+                return detection.ftcPose.yaw;
+            }
+        }
+        return null;
+    }
+
     //=============================================================
     //=========================STOP METHOD=========================
     //=============================================================

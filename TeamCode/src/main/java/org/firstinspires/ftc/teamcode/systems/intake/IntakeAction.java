@@ -7,11 +7,13 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class IntakeAction {
+
     static DcMotor intake;
     public IntakeAction(HardwareMap hardwareMap){
         intake = hardwareMap.get(DcMotorEx.class, "intake");
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
+
     public Action moveAction(double power) {
         return new Action() {
 

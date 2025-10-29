@@ -140,8 +140,7 @@ public final class CustomMecanumDrive {
 
             imu = lazyImu.get();
 
-            // TODO: reverse encoders if needed
-            //   leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+            leftBack.setDirection(DcMotorEx.Direction.REVERSE);
 
             this.pose = pose;
         }

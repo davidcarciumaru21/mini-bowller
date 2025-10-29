@@ -232,7 +232,7 @@ public class DriveBaseTeleOp extends LinearOpMode {
             lastShareGamepad1 = currentShareStateGamepad1;
             lastShareGamepad2 = currentShareStateGamepad2;
 
-            //======================Apllying powers=======================
+            //======================Applying powers=======================
             drive.leftFront.setPower(leftFrontPower);
             drive.leftBack.setPower(leftBackPower);
             drive.rightFront.setPower(rightFrontPower);
