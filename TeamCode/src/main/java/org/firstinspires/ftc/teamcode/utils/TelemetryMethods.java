@@ -11,7 +11,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 
 //=================================Enumes==============================
 import org.firstinspires.ftc.teamcode.enums.DriveTypes;
-import org.firstinspires.ftc.teamcode.enums.AllianceColor;
+import org.firstinspires.ftc.teamcode.enums.AllianceColors;
 
 /**
  * A utility class that provides helper methods for displaying common telemetry information
@@ -123,7 +123,7 @@ public final class TelemetryMethods {
      */
     public static void displayAlliance(Telemetry driverStationTelemetry,
                                        Telemetry dashboardTelemetry,
-                                       AllianceColor allianceColor) {
+                                       AllianceColors allianceColor) {
         driverStationTelemetry.addLine("-----------------------------");
         driverStationTelemetry.addLine("Alliance Color: " + allianceColor);
 

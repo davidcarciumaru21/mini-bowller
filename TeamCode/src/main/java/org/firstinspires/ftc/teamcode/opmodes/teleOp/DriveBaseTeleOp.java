@@ -14,7 +14,8 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import com.acmerobotics.roadrunner.Pose2d;
 
 //=================================Enums===============================
-import org.firstinspires.ftc.teamcode.enums.AllianceColor;
+import org.firstinspires.ftc.teamcode.enums.AllianceColors;
+import org.firstinspires.ftc.teamcode.enums.Patterns;
 import org.firstinspires.ftc.teamcode.roadRunner.drives.MecanumDrive;
 import org.firstinspires.ftc.teamcode.roadRunner.localizer.ThreeDeadWheelLocalizer;
 
@@ -86,7 +87,6 @@ public class DriveBaseTeleOp extends LinearOpMode {
             double startPoseX = json.get("x").getAsDouble();
             double startPoseY = json.get("y").getAsDouble();
             double startPoseHeading = json.get("heading").getAsDouble();
-            AllianceColor allianceColor = AllianceColor.valueOf(json.get("color").getAsString());
 
             startPose = new Pose2d(startPoseX, startPoseY, startPoseHeading);
         } catch (IOException e) {
@@ -103,6 +103,24 @@ public class DriveBaseTeleOp extends LinearOpMode {
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
                 RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
         imu.initialize(parameters);
+
+        //=============================================================
+        //=====================VARIABLES FROM AUTO=====================
+        //=============================================================
+
+        AllianceColors allianceColor;
+        Patterns pattern;
+
+        try (FileReader reader = new FileReader(file)) {
+            JsonParser parser = new JsonParser();
+            JsonObject json = parser.parse(reader).getAsJsonObject();
+
+            allianceColor = AllianceColors.valueOf(json.get("color").getAsString());
+            pattern =  Patterns.valueOf(json.get("pattern").getAsString());
+        } catch (IOException e) {
+            allianceColor = AllianceColors.NONE;
+            pattern = Patterns.NONE;
+        }
 
         //=============================================================
         //===================DASHBOARD INITIALIZATION==================

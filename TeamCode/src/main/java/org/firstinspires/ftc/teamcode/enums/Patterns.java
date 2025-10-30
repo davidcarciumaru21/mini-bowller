@@ -3,7 +3,8 @@ package org.firstinspires.ftc.teamcode.enums;
 public enum Patterns {
     GPP(21),
     PGP(22),
-    PPG(23);
+    PPG(23),
+    NONE(-1);
 
     private final int code;
 
