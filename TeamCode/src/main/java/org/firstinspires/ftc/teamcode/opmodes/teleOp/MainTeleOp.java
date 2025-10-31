@@ -295,6 +295,7 @@ public class MainTeleOp extends LinearOpMode {
             TelemetryMethods.displayCodeVersion(telemetry, dashboardTelemetry, "7.29.25.2.33");
             telemetry.addLine("-----------------------------");
             telemetry.update();
+            dashboardTelemetry.update();
 
         }
 

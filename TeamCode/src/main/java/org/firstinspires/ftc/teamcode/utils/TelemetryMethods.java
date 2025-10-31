@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.utils;
 
 //==============================Robot Core=============================
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 //================================Vison================================
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -175,5 +176,24 @@ public final class TelemetryMethods {
         dashboardTelemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (cm)", detectedId.ftcPose.x, detectedId.ftcPose.y, detectedId.ftcPose.z));
         dashboardTelemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detectedId.ftcPose.pitch, detectedId.ftcPose.roll, detectedId.ftcPose.yaw));
         dashboardTelemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (cm, deg, deg)", detectedId.ftcPose.range, detectedId.ftcPose.bearing, detectedId.ftcPose.elevation));
+    }
+
+    /**
+     * Displays the measured distance from the infrared sensor on both telemetry outputs.
+     *
+     * <p>This method sends formatted distance information to both the Driver Station telemetry
+     * and the FTC Dashboard telemetry, allowing simultaneous monitoring of sensor readings.</p>
+     *
+     * @param driverStationTelemetry The telemetry object for displaying data on the Driver Station phone.
+     * @param dashboardTelemetry The telemetry object for displaying data on the FTC Dashboard.
+     * @param distance The distance value reported by the sensor.
+     * @param unit The {@link org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit} used for the distance measurement.
+     */
+    public static void displayDistance(Telemetry driverStationTelemetry,
+                                       Telemetry dashboardTelemetry,
+                                       double distance,
+                                       DistanceUnit unit) {
+        driverStationTelemetry.addLine(String.format("Distance: %.2f %s", distance, unit.name()));
+        dashboardTelemetry.addLine(String.format("Distance: %.2f %s", distance, unit.name()));
     }
 }
