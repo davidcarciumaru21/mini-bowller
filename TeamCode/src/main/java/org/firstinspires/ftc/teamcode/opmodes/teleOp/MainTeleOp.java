@@ -12,9 +12,9 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
 //===============================Systems===============================
 import org.firstinspires.ftc.teamcode.enums.Patterns;
-import org.firstinspires.ftc.teamcode.systems.intexer.IntakeSystem;
+import org.firstinspires.ftc.teamcode.systems.intexer.IntexerSystem;
 import org.firstinspires.ftc.teamcode.systems.outtake.OuttakeSystem;
-import org.firstinspires.ftc.teamcode.systems.indexer.IndexSystem;
+
 
 //==============================Road Runner============================
 import com.acmerobotics.roadrunner.Pose2d;
@@ -79,9 +79,8 @@ public class MainTeleOp extends LinearOpMode {
         //====================SYSTEMS INITIALIZATION===================
         //=============================================================
 
-        IntakeSystem intake = new IntakeSystem(hardwareMap);
+        IntexerSystem intake = new IntexerSystem(hardwareMap);
         OuttakeSystem outtake = new OuttakeSystem(hardwareMap);
-        IndexSystem indexer = new IndexSystem(hardwareMap);
 
         //=============================================================
         //==================ROAD RUNNER INITIALIZATION=================
@@ -148,8 +147,6 @@ public class MainTeleOp extends LinearOpMode {
         //=============================================================
         //========================RUN ONCE CODE========================
         //=============================================================
-
-        indexer.start();
 
         // Main control loop
         while(opModeIsActive()) {
@@ -299,7 +296,6 @@ public class MainTeleOp extends LinearOpMode {
 
         }
 
-        indexer.stop();
         drive.leftFront.setPower(0.0);
         drive.leftBack.setPower(0.0);
         drive.rightFront.setPower(0.0);
