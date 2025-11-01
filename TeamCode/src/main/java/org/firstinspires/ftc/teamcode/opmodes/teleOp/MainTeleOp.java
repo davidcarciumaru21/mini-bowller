@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
 //===============================Systems===============================
 import org.firstinspires.ftc.teamcode.enums.Patterns;
-import org.firstinspires.ftc.teamcode.systems.intake.IntakeSystem;
+import org.firstinspires.ftc.teamcode.systems.intexer.IntakeSystem;
 import org.firstinspires.ftc.teamcode.systems.outtake.OuttakeSystem;
 import org.firstinspires.ftc.teamcode.systems.indexer.IndexSystem;
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.systems.intake;
+package org.firstinspires.ftc.teamcode.systems.intexer;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
@@ -6,10 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class IntakeAction {
-
+public class IntexerAction {
     static DcMotor intake;
-    public IntakeAction(HardwareMap hardwareMap){
+    public IntexerAction(HardwareMap hardwareMap){
         intake = hardwareMap.get(DcMotorEx.class, "intake");
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
