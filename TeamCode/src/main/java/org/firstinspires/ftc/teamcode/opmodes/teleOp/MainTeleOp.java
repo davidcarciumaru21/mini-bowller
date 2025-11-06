@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.enums.Patterns;
 import org.firstinspires.ftc.teamcode.systems.intexer.IntexerSystem;
 import org.firstinspires.ftc.teamcode.systems.outtake.OuttakeSystem;
+import org.firstinspires.ftc.teamcode.systems.stopper.StopperSystem;
 
 
 //==============================Road Runner============================
@@ -57,6 +58,12 @@ public class MainTeleOp extends LinearOpMode {
         boolean currentShareStateGamepad2;
         boolean lastShareGamepad2 = false;
 
+        boolean currentXStateGamepad1;
+        boolean lastXGamepad1 = false;
+
+        boolean currentOStateGamepad1;
+        boolean lastOGamepad1 = false;
+
         //=========================Drive types=========================
         DriveTypes driveModeGamepad1 = DriveTypes.ROBOTCENTRIC;
         DriveTypes driveModeGamepad2 = DriveTypes.ROBOTCENTRIC;
@@ -81,6 +88,7 @@ public class MainTeleOp extends LinearOpMode {
 
         IntexerSystem intake = new IntexerSystem(hardwareMap);
         OuttakeSystem outtake = new OuttakeSystem(hardwareMap);
+        StopperSystem stopper = new StopperSystem(hardwareMap);
 
         //=============================================================
         //==================ROAD RUNNER INITIALIZATION=================
@@ -192,6 +200,8 @@ public class MainTeleOp extends LinearOpMode {
             //==================Gamepads drive types selection==================
             currentShareStateGamepad1 = gamepad1.share;
             currentShareStateGamepad2 = gamepad2.share;
+            currentXStateGamepad1 = gamepad1.a;
+            currentOStateGamepad1 = gamepad1.y;
 
             if (currentShareStateGamepad1 && !lastShareGamepad1) {
                 if (driveModeGamepad1 == DriveTypes.ROBOTCENTRIC) {
@@ -266,6 +276,7 @@ public class MainTeleOp extends LinearOpMode {
             lastShareGamepad1 = currentShareStateGamepad1;
             lastShareGamepad2 = currentShareStateGamepad2;
 
+
             //======================Applying powers=======================
             drive.leftFront.setPower(leftFrontPower);
             drive.leftBack.setPower(leftBackPower);
@@ -276,8 +287,25 @@ public class MainTeleOp extends LinearOpMode {
             //===========================SYSTEMS===========================
             //=============================================================
 
-            outtake.move(gamepad1.left_trigger);
-            intake.move(gamepad1.right_trigger);
+            intake.move(1.0); //The entire match
+            stopper.on();
+            if(currentOStateGamepad1 && !lastOGamepad1){
+                outtake.move(0.5);
+            }
+
+            if(currentXStateGamepad1 && !lastXGamepad1){
+                if(outtake.isAtTargetSpeed(0.5)){
+                    stopper.off();
+                    sleep(400);
+                    outtake.move(0.0);
+                }
+            }
+
+            lastXGamepad1 = currentXStateGamepad1;
+            lastOGamepad1 = currentOStateGamepad1;
+
+            telemetry.addData("Outtake at speed", outtake.isAtTargetSpeed(gamepad1.left_trigger));
+
 
             //=============================================================
             //==========================TELEMETRY==========================
