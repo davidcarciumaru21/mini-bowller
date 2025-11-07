@@ -11,7 +11,7 @@ public class OuttakeSystem {
 
     // 6000 RPM motor (free speed)
     private static final double MAX_RPM = 6000.0;
-    private static final double TOLERANCE = 0.1; // 10% tolerance band
+    private static final double TOLERANCE = 0.15; // 10% tolerance band
 
     public OuttakeSystem(HardwareMap hardwareMap) {
         outtake = hardwareMap.get(DcMotorEx.class, "outtake");
@@ -29,7 +29,7 @@ public class OuttakeSystem {
 
         // Convert ticks/sec -> RPM
         double ticksPerRev = outtake.getMotorType().getTicksPerRev();
-        double currentRPM = (velocityTicksPerSec / ticksPerRev) * 60.0;
+        double currentRPM = (velocityTicksPerSec / ticksPerRev) * 6000.0;
 
         // Expected RPM (rough approximation)
         double expectedRPM = MAX_RPM * targetPower;

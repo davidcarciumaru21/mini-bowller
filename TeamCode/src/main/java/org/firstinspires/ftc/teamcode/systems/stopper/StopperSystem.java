@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class StopperSystem {
 
-    static int positionON = 90; // PLACEHOLDER
-    static int positionOFF = 0; // PLACEHOLDER
+    static double positionON = 1;
+    static double positionOFF = 0.7;
     static Servo stopper;
     int state = 0;
 

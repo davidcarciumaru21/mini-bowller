@@ -42,7 +42,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.File;
 
-@TeleOp(name = "DriveBaseWithSystems", group = "Dev-Teleops")
+@TeleOp(name = "Main-teleop", group = "Dev-Teleops")
 public class MainTeleOp extends LinearOpMode {
 
     @Override
@@ -248,9 +248,9 @@ public class MainTeleOp extends LinearOpMode {
                     rightBackPower = (rotY + rotX - rx) / denominator;
                 }
             } else {
-                x = gamepad1.left_stick_x * coefXGamepad1;
+                x = -gamepad1.left_stick_x * coefXGamepad1;
                 y =  -gamepad1.left_stick_y * coefYGamepad1;
-                rx = gamepad1.right_stick_x * coefRxGamepad1;
+                rx = -gamepad1.right_stick_x * coefRxGamepad1;
 
                 if (driveModeGamepad1 == DriveTypes.ROBOTCENTRIC) {
                     //======================Gamepad1 drivebase======================
@@ -288,23 +288,26 @@ public class MainTeleOp extends LinearOpMode {
             //=============================================================
 
             intake.move(1.0); //The entire match
-            stopper.on();
+            stopper.off();
             if(currentOStateGamepad1 && !lastOGamepad1){
                 outtake.move(0.5);
             }
 
             if(currentXStateGamepad1 && !lastXGamepad1){
+
                 if(outtake.isAtTargetSpeed(0.5)){
-                    stopper.off();
-                    sleep(400);
+                    stopper.on();
+                    sleep(1000);
                     outtake.move(0.0);
                 }
+
+
             }
 
             lastXGamepad1 = currentXStateGamepad1;
             lastOGamepad1 = currentOStateGamepad1;
 
-            telemetry.addData("Outtake at speed", outtake.isAtTargetSpeed(gamepad1.left_trigger));
+            telemetry.addData("Outtake at speed", outtake.isAtTargetSpeed(0.5));
 
 
             //=============================================================
