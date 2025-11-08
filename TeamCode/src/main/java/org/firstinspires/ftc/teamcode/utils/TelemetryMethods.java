@@ -5,6 +5,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 //================================Vison================================
+import org.firstinspires.ftc.teamcode.systems.outtake.OuttakeSystem;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 //==============================Road Runner============================
@@ -176,6 +177,12 @@ public final class TelemetryMethods {
         dashboardTelemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (cm)", detectedId.ftcPose.x, detectedId.ftcPose.y, detectedId.ftcPose.z));
         dashboardTelemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detectedId.ftcPose.pitch, detectedId.ftcPose.roll, detectedId.ftcPose.yaw));
         dashboardTelemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (cm, deg, deg)", detectedId.ftcPose.range, detectedId.ftcPose.bearing, detectedId.ftcPose.elevation));
+    }
+
+    public static void displayOuttakeInformation(Telemetry driverStationTelemetry, OuttakeSystem outtake, double targetPower){
+        driverStationTelemetry.addData("Outtake at speed: ", outtake.speed());
+        driverStationTelemetry.addData("Outtake is at speed:", outtake.isAtTargetSpeed(targetPower));
+
     }
 
     /**

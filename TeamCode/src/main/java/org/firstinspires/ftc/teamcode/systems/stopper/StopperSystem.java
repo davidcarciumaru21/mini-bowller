@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode.systems.stopper;
 
+import static java.lang.Math.abs;
+
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class StopperSystem {
-
     static double positionON = 1;
-    static double positionOFF = 0.7;
+    static double positionOFF = 0.5;
     static Servo stopper;
-    int state = 0;
+    boolean state;
 
     public StopperSystem(HardwareMap hardwareMap){
         stopper = hardwareMap.get(Servo.class, "stopper");
@@ -16,20 +17,15 @@ public class StopperSystem {
 
     public void on(){
         stopper.setPosition(positionON);
-        state = 1;
+        state = (abs(stopper.getPosition() - positionON) < 3);
     }
 
     public void off(){
         stopper.setPosition(positionOFF);
-        state = 0;
+        state = (abs(stopper.getPosition() - positionOFF) < 3);
     }
 
     public boolean getState(){
-        if(state == 0){
-            return false;
-        }
-        else{
-            return true;
-        }
+        return state;
     }
 }

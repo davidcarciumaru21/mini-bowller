@@ -89,6 +89,8 @@ public class MainTeleOp extends LinearOpMode {
         IntexerSystem intake = new IntexerSystem(hardwareMap);
         OuttakeSystem outtake = new OuttakeSystem(hardwareMap);
         StopperSystem stopper = new StopperSystem(hardwareMap);
+        boolean outtakeOn = false;
+        double outtakePower;
 
         //=============================================================
         //==================ROAD RUNNER INITIALIZATION=================
@@ -287,18 +289,26 @@ public class MainTeleOp extends LinearOpMode {
             //===========================SYSTEMS===========================
             //=============================================================
 
-            intake.move(1.0); //The entire match
+            intake.move(1.0); // The entire match
             stopper.off();
-            if(currentOStateGamepad1 && !lastOGamepad1){
-                outtake.move(0.5);
+            outtakePower = 1.0;
+
+            if(currentOStateGamepad1 && !lastOGamepad1){ // Speed up the outtake before launching the ball
+                outtakeOn = true;
             }
 
-            if(currentXStateGamepad1 && !lastXGamepad1){
+            if(outtakeOn){
+                outtake.move(outtakePower);
+            }
+            else{
+                outtake.move(0.0);
+            }
 
-                if(outtake.isAtTargetSpeed(0.5)){
+            if(currentXStateGamepad1 && !lastXGamepad1){ // If the outtake is at speed, launch the ball.
+                if(outtake.isAtTargetSpeed(1.0)){
                     stopper.on();
-                    sleep(1000);
-                    outtake.move(0.0);
+                    sleep(1500);
+                    outtakeOn = false;
                 }
 
 
@@ -307,7 +317,7 @@ public class MainTeleOp extends LinearOpMode {
             lastXGamepad1 = currentXStateGamepad1;
             lastOGamepad1 = currentOStateGamepad1;
 
-            telemetry.addData("Outtake at speed", outtake.isAtTargetSpeed(0.5));
+
 
 
             //=============================================================
@@ -317,6 +327,7 @@ public class MainTeleOp extends LinearOpMode {
             driveLocalizer.update();
             currentPose = driveLocalizer.getPose();
 
+            TelemetryMethods.displayOuttakeInformation(telemetry, outtake, 1.0);
             TelemetryMethods.displayMotorPowers(telemetry, dashboardTelemetry, leftFrontPower, leftBackPower, rightFrontPower, rightBackPower);
             TelemetryMethods.displayPosition(telemetry, dashboardTelemetry, currentPose);
             TelemetryMethods.displayDriveModes(telemetry, dashboardTelemetry, driveModeGamepad1, driveModeGamepad2);
