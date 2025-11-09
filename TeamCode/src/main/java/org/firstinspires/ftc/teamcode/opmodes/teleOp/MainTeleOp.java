@@ -307,7 +307,7 @@ public class MainTeleOp extends LinearOpMode {
             if(currentXStateGamepad1 && !lastXGamepad1){ // If the outtake is at speed, launch the ball.
                 if(outtake.isAtTargetSpeed(1.0)){
                     stopper.on();
-                    sleep(1500);
+                    sleep(4000);
                     outtakeOn = false;
                 }
 
