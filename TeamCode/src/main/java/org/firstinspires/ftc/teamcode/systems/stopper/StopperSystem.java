@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class StopperSystem {
     static double positionON = 1;
-    static double positionOFF = 0.5;
+    static double positionOFF = 0.3;
     static Servo stopper;
     boolean state;
 

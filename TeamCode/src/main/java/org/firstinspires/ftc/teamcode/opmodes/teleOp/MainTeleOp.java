@@ -289,9 +289,9 @@ public class MainTeleOp extends LinearOpMode {
             //===========================SYSTEMS===========================
             //=============================================================
 
-            intake.move(1.0); // The entire match
+
             stopper.off();
-            outtakePower = 1.0;
+            outtakePower = 0.8;
 
             if(currentOStateGamepad1 && !lastOGamepad1){ // Speed up the outtake before launching the ball
                 outtakeOn = true;
@@ -299,15 +299,18 @@ public class MainTeleOp extends LinearOpMode {
 
             if(outtakeOn){
                 outtake.move(outtakePower);
+                intake.move(0.0);
             }
             else{
                 outtake.move(0.0);
+                intake.move(1.0); // The entire match
             }
 
             if(currentXStateGamepad1 && !lastXGamepad1){ // If the outtake is at speed, launch the ball.
                 if(outtake.isAtTargetSpeed(1.0)){
+                    intake.move(1.0); // The entire match
                     stopper.on();
-                    sleep(1500);
+                    sleep(3000);
                     outtakeOn = false;
                 }
 
