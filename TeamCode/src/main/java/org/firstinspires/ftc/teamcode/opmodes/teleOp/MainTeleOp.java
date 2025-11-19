@@ -90,7 +90,7 @@ public class MainTeleOp extends LinearOpMode {
         OuttakeSystem outtake = new OuttakeSystem(hardwareMap);
         StopperSystem stopper = new StopperSystem(hardwareMap);
         boolean outtakeOn = false;
-        double outtakePower;
+        double outtakePower = 1.0;
 
         //=============================================================
         //==================ROAD RUNNER INITIALIZATION=================
@@ -123,7 +123,7 @@ public class MainTeleOp extends LinearOpMode {
         IMU imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
         imu.initialize(parameters);
 
         //=============================================================
@@ -240,8 +240,8 @@ public class MainTeleOp extends LinearOpMode {
 
                 } else if (driveModeGamepad2 == DriveTypes.FIELDCENTRIC) {
                     botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                    rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-                    rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+                    rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
+                    rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
 
                     denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
                     leftFrontPower = (rotY + rotX + rx) / denominator;
@@ -264,8 +264,8 @@ public class MainTeleOp extends LinearOpMode {
 
                 } else if (driveModeGamepad1 == DriveTypes.FIELDCENTRIC) {
                     botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                    rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-                    rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+                    rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
+                    rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
 
                     denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
                     leftFrontPower = (rotY + rotX + rx) / denominator;
@@ -289,39 +289,40 @@ public class MainTeleOp extends LinearOpMode {
             //===========================SYSTEMS===========================
             //=============================================================
 
-
             stopper.off();
-            outtakePower = 0.8;
+            if (gamepad1.dpadUpWasPressed()) {
+                outtakePower += 0.05;
+            }
+
+            if (gamepad1.dpadDownWasPressed()) {
+                outtakePower -= 0.05;
+            }
 
             if(currentOStateGamepad1 && !lastOGamepad1){ // Speed up the outtake before launching the ball
                 outtakeOn = true;
             }
-
+            outtake.move(outtakePower);
             if(outtakeOn){
                 outtake.move(outtakePower);
                 intake.move(0.0);
             }
             else{
-                outtake.move(0.0);
+                //outtake.move(0.0);
                 intake.move(1.0); // The entire match
             }
 
             if(currentXStateGamepad1 && !lastXGamepad1){ // If the outtake is at speed, launch the ball.
-                if(outtake.isAtTargetSpeed(1.0)){
+                if(outtake.isAtTargetSpeed(outtakePower)){
                     intake.move(1.0); // The entire match
                     stopper.on();
                     sleep(3000);
                     outtakeOn = false;
                 }
 
-
             }
 
             lastXGamepad1 = currentXStateGamepad1;
             lastOGamepad1 = currentOStateGamepad1;
-
-
-
 
             //=============================================================
             //==========================TELEMETRY==========================
@@ -335,10 +336,10 @@ public class MainTeleOp extends LinearOpMode {
             TelemetryMethods.displayPosition(telemetry, dashboardTelemetry, currentPose);
             TelemetryMethods.displayDriveModes(telemetry, dashboardTelemetry, driveModeGamepad1, driveModeGamepad2);
             TelemetryMethods.displayCodeVersion(telemetry, dashboardTelemetry, "7.29.25.2.33");
+            telemetry.addData("outtake", outtakePower);
             telemetry.addLine("-----------------------------");
             telemetry.update();
             dashboardTelemetry.update();
-
         }
 
         drive.leftFront.setPower(0.0);
