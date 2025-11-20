@@ -240,8 +240,8 @@ public class MainTeleOp extends LinearOpMode {
 
                 } else if (driveModeGamepad2 == DriveTypes.FIELDCENTRIC) {
                     botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                    rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-                    rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+                    rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+                    rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
                     denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
                     leftFrontPower = (rotY + rotX + rx) / denominator;
@@ -250,9 +250,9 @@ public class MainTeleOp extends LinearOpMode {
                     rightBackPower = (rotY + rotX - rx) / denominator;
                 }
             } else {
-                x = -gamepad1.left_stick_x * coefXGamepad1;
+                x = gamepad1.left_stick_x * coefXGamepad1;
                 y =  -gamepad1.left_stick_y * coefYGamepad1;
-                rx = -gamepad1.right_stick_x * coefRxGamepad1;
+                rx = gamepad1.right_stick_x * coefRxGamepad1;
 
                 if (driveModeGamepad1 == DriveTypes.ROBOTCENTRIC) {
                     //======================Gamepad1 drivebase======================
@@ -264,8 +264,8 @@ public class MainTeleOp extends LinearOpMode {
 
                 } else if (driveModeGamepad1 == DriveTypes.FIELDCENTRIC) {
                     botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                    rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-                    rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+                    rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+                    rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
                     denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
                     leftFrontPower = (rotY + rotX + rx) / denominator;

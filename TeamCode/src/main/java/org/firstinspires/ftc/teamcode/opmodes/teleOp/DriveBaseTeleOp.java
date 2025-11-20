@@ -212,8 +212,8 @@ public class DriveBaseTeleOp extends LinearOpMode {
 
                 } else if (driveModeGamepad2 == DriveTypes.FIELDCENTRIC) {
                     botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                    rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-                    rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+                    rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+                    rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
                     denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
                     leftFrontPower = (rotY + rotX + rx) / denominator;
@@ -236,8 +236,8 @@ public class DriveBaseTeleOp extends LinearOpMode {
 
                 } else if (driveModeGamepad1 == DriveTypes.FIELDCENTRIC) {
                     botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-                    rotX = x * Math.cos(botHeading) - y * Math.sin(botHeading);
-                    rotY = x * Math.sin(botHeading) + y * Math.cos(botHeading);
+                    rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+                    rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
                     denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
                     leftFrontPower = (rotY + rotX + rx) / denominator;
